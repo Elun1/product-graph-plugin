@@ -2,10 +2,7 @@
   "mcpServers": {
     "product-graph": {
       "type": "http",
-      "url": "${PRODUCT_GRAPH_URL:-https://product-graph.app}/mcp",
-      "headers": {
-        "Authorization": "Bearer ${PRODUCT_GRAPH_TOKEN}"
-      }
+      "url": "${PRODUCT_GRAPH_URL:-https://product-graph.app}/mcp"
     }
   }
 }
