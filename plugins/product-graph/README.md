@@ -17,10 +17,22 @@ brings two things at once:
 /plugin install product-graph@productos
 ```
 
-That's it — **authentication is OAuth by default**. The first time Claude uses the server
-it'll prompt you to sign in: run `/mcp`, pick `product-graph`, and **Authenticate**. A
-browser opens to the app's consent page; sign in and **Approve**, and Claude is connected
-as you. Nothing to copy or export.
+That's it — **authentication is OAuth by default**. In **Claude Code**, the first time
+Claude uses the server it'll prompt you to sign in: run `/mcp`, pick `product-graph`, and
+**Authenticate**. A browser opens to the app's consent page; sign in and **Approve**, and
+Claude is connected as you. Nothing to copy or export.
+
+### Claude Desktop / Cowork
+
+The plugin's bundled MCP config uses a **loopback (`localhost`) OAuth callback** — that
+works in Claude Code, but **not** in Claude Desktop / Cowork, where there's no local
+listener to catch it (you'll see a redirect to `localhost:…/callback` that dead-ends, and
+the server won't appear under **Connectors**).
+
+There, install the plugin for the **skills**, but add the MCP server as a **custom
+Connector** instead of using the bundled config: **Settings → Connectors → Add custom
+connector**, URL `https://product-graph.app/mcp`. That flow uses a hosted callback (no
+localhost), so Approve completes and the connector shows up — available in Cowork.
 
 The server defaults to `https://product-graph.app`. Self-hosting? Override it:
 
