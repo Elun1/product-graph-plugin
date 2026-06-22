@@ -19,10 +19,15 @@ what lets the *same* plugin config authenticate cleanly in both **Claude Code** 
 
 ## Install
 
+**Claude Code:**
+
 ```
 /plugin marketplace add Elun1/product-graph-plugin
 /plugin install product-graph@productos
 ```
+
+**Claude Desktop:** Settings → **Plugins** → **Add** → **Add Marketplace** → paste the repo
+URL `https://github.com/Elun1/product-graph-plugin` → **Install** `product-graph`.
 
 That's it — **authentication is OAuth by default**. The first time Claude uses the server,
 `mcp-remote` opens a browser to the app's consent page: sign in and **Approve**, and Claude
