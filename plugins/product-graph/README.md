@@ -10,6 +10,13 @@ brings two things at once:
 - **The `product-graph` MCP server** — already pointed at the hosted instance, auth'd as
   you over OAuth (no token to copy).
 
+## Requirements
+
+The bundled MCP server connects through [`mcp-remote`](https://www.npmjs.com/package/mcp-remote),
+so you need **Node.js** installed (the plugin runs it via `npx`). That one dependency is
+what lets the *same* plugin config authenticate cleanly in both **Claude Code** and
+**Claude Desktop** with nothing to edit.
+
 ## Install
 
 ```
@@ -17,22 +24,10 @@ brings two things at once:
 /plugin install product-graph@productos
 ```
 
-That's it — **authentication is OAuth by default**. In **Claude Code**, the first time
-Claude uses the server it'll prompt you to sign in: run `/mcp`, pick `product-graph`, and
-**Authenticate**. A browser opens to the app's consent page; sign in and **Approve**, and
-Claude is connected as you. Nothing to copy or export.
-
-### Claude Desktop / Cowork
-
-The plugin's bundled MCP config uses a **loopback (`localhost`) OAuth callback** — that
-works in Claude Code, but **not** in Claude Desktop / Cowork, where there's no local
-listener to catch it (you'll see a redirect to `localhost:…/callback` that dead-ends, and
-the server won't appear under **Connectors**).
-
-There, install the plugin for the **skills**, but add the MCP server as a **custom
-Connector** instead of using the bundled config: **Settings → Connectors → Add custom
-connector**, URL `https://product-graph.app/mcp`. That flow uses a hosted callback (no
-localhost), so Approve completes and the connector shows up — available in Cowork.
+That's it — **authentication is OAuth by default**. The first time Claude uses the server,
+`mcp-remote` opens a browser to the app's consent page: sign in and **Approve**, and Claude
+is connected as you. The grant is cached (`~/.mcp-auth`), so later sessions are silent.
+Nothing to copy or export.
 
 The server defaults to `https://product-graph.app`. Self-hosting? Override it:
 
@@ -42,6 +37,14 @@ export PRODUCT_GRAPH_URL="https://graph.internal.example.com"
 
 Whatever you authorize can read and **propose**, but never **ratify** — sealing always
 happens by a human signed into the app. That contract is structural, not a convention.
+
+### Cowork / cloud sessions
+
+`mcp-remote`'s sign-in uses a local (`localhost`) callback, which works wherever the bridge
+and your browser share a machine (Claude Code, Claude Desktop). If you're in a **cloud**
+session where the server runs remote from your browser, that callback can't complete — there,
+add the server as a **custom Connector** instead (**Settings → Connectors → Add custom
+connector**, URL `https://product-graph.app/mcp`), which uses a hosted callback.
 
 ### Headless / CI (no browser)
 
