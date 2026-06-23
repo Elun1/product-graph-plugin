@@ -2,7 +2,7 @@
   "mcpServers": {
     "product-graph": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "${PRODUCT_GRAPH_URL:-https://product-graph.app}/mcp"]
+      "args": ["-y", "mcp-remote@0.1.38", "${PRODUCT_GRAPH_URL:-https://product-graph.app}/mcp"]
     }
   }
 }
