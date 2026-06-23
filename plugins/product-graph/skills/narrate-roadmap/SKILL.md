@@ -97,26 +97,20 @@ through-line in customer language.
 ## Step 4 — Deliver
 
 **internal — persist as a snapshot (the board's prose companion).** Exactly like
-`analyze-graph`, save it via the loopback `http_api` (NOT an MCP write — this
-seals nothing, creates no node/edge). The roadmap view reads the latest
-`kind="roadmap"` snapshot and renders it beside the live board:
+`analyze-graph`, save it by calling the **`save_analysis` MCP verb** (NOT a graph
+write — this seals nothing, creates no node/edge, and works over the hosted
+connection). The roadmap view reads the latest `kind="roadmap"` snapshot and
+renders it beside the live board. Call `save_analysis` with:
 
-```bash
-curl -s -X POST http://127.0.0.1:8799/api/analysis \
-  -H "Content-Type: application/json" \
-  -d '{
-    "kind": "roadmap",
-    "generated_by": "narrate-roadmap skill",
-    "metrics": { "now": <n>, "next": <n>, "later": <n>, "under_consideration": <n>, "shipped": <n> },
-    "narrative": "<the full markdown story>"
-  }'
-```
+- `kind: "roadmap"` — keeps it separate from `analyze-graph` portraits in the same store
+- `generated_by: "narrate-roadmap skill"`
+- `metrics: { "now": <n>, "next": <n>, "later": <n>, "under_consideration": <n>, "shipped": <n> }`
+- `narrative: "<the full markdown story>"`
 
-`kind: "roadmap"` keeps it separate from `analyze-graph` portraits in the same
-store. A successful save returns `{ "id": ..., "generated_at": ..., "kind": "roadmap" }`;
-re-running creates a new row and the board shows the newest. (Use your `serve.sh`
-port if not 8799.) Also write the markdown to
-`narratives/<date>-roadmap-internal.md` for portability.
+A successful save returns `{ "id": ..., "generated_at": ..., "kind": "roadmap" }`;
+re-running creates a new row and the board shows the newest. (Self-hosting on a
+local checkout? The same call is also served by the loopback `POST /api/analysis`.)
+Also write the markdown to `narratives/<date>-roadmap-internal.md` for portability.
 
 **external — publication file.** Write to `narratives/<date>-roadmap-external.md`
 and hand to its destination — the external variant is *not* shown in the board UI.

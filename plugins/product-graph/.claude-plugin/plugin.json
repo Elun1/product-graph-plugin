@@ -1,7 +1,7 @@
 {
   "name": "product-graph",
   "description": "Typed causal product graph — AI proposes, a human ratifies. Bundles the orchestrator skills (extract a graph from docs, sense-make over it, render stakeholder narratives) and the product-graph MCP server.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "Elias Lundmark"
   },

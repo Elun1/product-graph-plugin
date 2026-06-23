@@ -26,7 +26,7 @@ four reading moves in Step 2.
 
 1. **Read-only. No write path.** You only call read verbs here. Recommendations route
    through the normal `propose_* → ratify_*` loop — you never propose or ratify inside
-   this analysis. Persisting the snapshot to `/api/analysis` (see §4) is NOT a graph
+   this analysis. Persisting the snapshot via `save_analysis` (see §5) is NOT a graph
    write — it creates no node, no edge, and seals nothing.
 2. **Respect edge `category`.** The causal spine is `causal` + `epistemic` only. Never
    treat a `structural` (`realizes`/`supersedes`/`decomposes_into`) or `measurement`
@@ -47,9 +47,8 @@ four reading moves in Step 2.
 ## Prerequisites
 
 The `product-graph` MCP server must be connected — via the plugin or, on a local
-checkout, `claude mcp add` / `.mcp.json`. The metric verbs run over MCP. **Persisting a
-snapshot** additionally needs the `/api/*` loopback (same process; default port 8799),
-which is reachable on a local checkout but not over the hosted plugin connection.
+checkout, `claude mcp add` / `.mcp.json`. The metric verbs and the `save_analysis`
+snapshot verb all run over MCP, so this works over the hosted plugin connection.
 
 ## Step 1 — Gather mechanical metrics (read verbs only)
 
@@ -232,37 +231,37 @@ those as first-class findings, never as a broken chart.
 
 ## Step 5 — Persist as a stored snapshot
 
-After composing the narrative, persist it via the loopback `http_api` with curl (NOT an
-MCP write — this creates no node/edge and seals nothing):
+After composing the narrative, persist it by calling the **`save_analysis` MCP verb**
+(NOT a graph write — this creates no node/edge and seals nothing, so it works over the
+hosted connection just like the read verbs). Call it with `kind: "analysis"`,
+`generated_by: "analyze-graph skill"`, the full `narrative` text, and a `metrics` object
+shaped like:
 
-```bash
-curl -s -X POST http://127.0.0.1:8799/api/analysis \
-  -H "Content-Type: application/json" \
-  -d '{
-    "generated_by": "analyze-graph skill",
-    "metrics": {
-      "node_count": <N>, "edge_count": <E>, "census": <census_json>,
-      "stories": [
-        {
-          "title": "<short punchy name>",
-          "dynamic": "<1–3 sentences, human register; **bold** the named tension>",
-          "wiring": "<the edges that reveal it, e.g. loop —leads_to→ quality; ceiling —threatens→ quality>",
-          "origin": "emergent | prose",
-          "move": "cycle | convergence | tension | asymmetry",
-          "node_ids": ["<ids of the nodes involved, for click-through>"]
-        }
-      ],
-      "prose": {
-        "lede": "<1–2 sentence framing>",
-        "load_centre": "<load-centre section, bound to the load strip>",
-        "path_geometry": "<path-geometry section, bound to the path bars>",
-        "composition": "<deliberation-health section, bound to the ratio + threat callout>"
-      },
-      "gate_label": "This portrait is generated from the graph. It sealed nothing. Every finding traces to a node or edge you can open and judge."
-    },
-    "narrative": "<the full narrative text — kept for the appendix / older-client fallback>"
-  }'
+```json
+{
+  "node_count": <N>, "edge_count": <E>, "census": <census_json>,
+  "stories": [
+    {
+      "title": "<short punchy name>",
+      "dynamic": "<1–3 sentences, human register; **bold** the named tension>",
+      "wiring": "<the edges that reveal it, e.g. loop —leads_to→ quality; ceiling —threatens→ quality>",
+      "origin": "emergent | prose",
+      "move": "cycle | convergence | tension | asymmetry",
+      "node_ids": ["<ids of the nodes involved, for click-through>"]
+    }
+  ],
+  "prose": {
+    "lede": "<1–2 sentence framing>",
+    "load_centre": "<load-centre section, bound to the load strip>",
+    "path_geometry": "<path-geometry section, bound to the path bars>",
+    "composition": "<deliberation-health section, bound to the ratio + threat callout>"
+  },
+  "gate_label": "This portrait is generated from the graph. It sealed nothing. Every finding traces to a node or edge you can open and judge."
+}
 ```
+
+(Self-hosting with a local checkout? The same call is also served by the loopback
+`POST /api/analysis`, which the web UI uses.)
 
 Replace `<N>`, `<E>`, `<census_json>` with the actual values from step 1, fill `stories`
 from Step 2, and fill the `prose` keys with the matching sections you composed. A
