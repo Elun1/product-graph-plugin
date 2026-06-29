@@ -11,7 +11,7 @@
       "name": "product-graph",
       "source": "./plugins/product-graph",
       "description": "Typed causal product graph: the skills (extract, sense-make, narrate) plus the product-graph MCP server. AI proposes; a human ratifies.",
-      "version": "0.3.1"
+      "version": "0.3.2"
     }
   ]
 }

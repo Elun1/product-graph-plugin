@@ -108,8 +108,13 @@ renders it beside the live board. Call `save_analysis` with:
 - `narrative: "<the full markdown story>"`
 
 A successful save returns `{ "id": ..., "generated_at": ..., "kind": "roadmap" }`;
-re-running creates a new row and the board shows the newest. (Self-hosting on a
-local checkout? The same call is also served by the loopback `POST /api/analysis`.)
+re-running creates a new row and the board shows the newest. **Always use the
+`save_analysis` MCP verb** — it works over the hosted connection
+(product-graph.app) and is the only path for remote users. Do **not** call a
+loopback/`localhost` HTTP route: there is no loopback when you're connected to a
+hosted server, and the attempt just fails. (The same persistence is *also*
+reachable via `POST /api/analysis` **only** when you're self-hosting a local
+checkout — never on a hosted connection.)
 Also write the markdown to `narratives/<date>-roadmap-internal.md` for portability.
 
 **external — publication file.** Write to `narratives/<date>-roadmap-external.md`

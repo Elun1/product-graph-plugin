@@ -1,6 +1,6 @@
 ---
 name: analyze-graph
-description: 'Produce a dated interpretive portrait of the product model''s shape — what the structure reveals that the prose doesn''t. Reads the deterministic metric verbs, applies the judgment the core refuses (naming, ranking, theme-calling), leads with the structural STORIES the wiring tells (feedback loops, single points of failure, latent contradictions, exposure asymmetries), composes a narrative, and persists it as a stored snapshot via the loopback http_api. Use when: analyze graph, graph analysis, shape of the model, what does the graph reveal, interpretive analysis, load-bearing nodes, path asymmetry, analyze strategy, portrait of the model, stories in the graph, structural tensions.'
+description: 'Produce a dated interpretive portrait of the product model''s shape — what the structure reveals that the prose doesn''t. Reads the deterministic metric verbs, applies the judgment the core refuses (naming, ranking, theme-calling), leads with the structural STORIES the wiring tells (feedback loops, single points of failure, latent contradictions, exposure asymmetries), composes a narrative, and persists it as a stored snapshot via the save_analysis MCP verb. Use when: analyze graph, graph analysis, shape of the model, what does the graph reveal, interpretive analysis, load-bearing nodes, path asymmetry, analyze strategy, portrait of the model, stories in the graph, structural tensions.'
 ---
 
 # Analyze the Graph (reflective portrait)
@@ -260,8 +260,12 @@ shaped like:
 }
 ```
 
-(Self-hosting with a local checkout? The same call is also served by the loopback
-`POST /api/analysis`, which the web UI uses.)
+**Always use the `save_analysis` MCP verb** — it works over the hosted connection
+(product-graph.app) and is the only path for remote users. Do **not** call a
+loopback/`localhost` HTTP route: there is no loopback on a hosted connection and
+the attempt just fails. (The same persistence is *also* reachable via
+`POST /api/analysis` **only** when self-hosting a local checkout — never on a
+hosted connection.)
 
 Replace `<N>`, `<E>`, `<census_json>` with the actual values from step 1, fill `stories`
 from Step 2, and fill the `prose` keys with the matching sections you composed. A
@@ -271,8 +275,9 @@ the `prose` map are optional — if omitted, the page falls back to rendering th
 prose to evidence as designed. Include `node_ids` whenever you can name them: the page
 turns them into chips that open the node in the reasoning environment.
 
-The briefing page reads `GET /api/analysis/latest` to display the stored snapshot.
-Re-running this skill creates a new row; history is available at `GET /api/analyses`.
+(For reference only — the orchestrator never calls these.) The web UI's briefing
+page reads `GET /api/analysis/latest` to display the stored snapshot; re-running
+this skill creates a new row, and history is at `GET /api/analyses`.
 
 ## Notes
 
